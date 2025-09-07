@@ -24,8 +24,7 @@ spring:
         connection:
           isolation: 2  # 2 = TRANSACTION_READ_COMMITTED
   kafka:
-    bootstrap-servers:
-      - localhost:9092
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: task-group # The consumer group id used for partition assignment and offset tracking. Consumers with the same group share partitions; offsets are stored per group in __consumer_offsets
       auto-offset-reset: earliest # 1. earliest = start from the earliest available offset when no committed offset exists (good for new groups). 2. latest = start from end (only new records). 3. none = throw if no offset.
