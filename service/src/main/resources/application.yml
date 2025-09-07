@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: task-logger
+  datasource:
+    url: jdbc:postgresql://localhost:5432/codetatva_taskdb
+    username: root
+    password: password123
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      pool-name: HikariPool-1
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    # Recommended: enable dialect explicitly if you're getting metadata issues
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        connection:
+          isolation: 2  # 2 = TRANSACTION_READ_COMMITTED
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    consumer:
+      group-id: task-group # The consumer group id used for partition assignment and offset tracking. Consumers with the same group share partitions; offsets are stored per group in __consumer_offsets
+      auto-offset-reset: earliest # 1. earliest = start from the earliest available offset when no committed offset exists (good for new groups). 2. latest = start from end (only new records). 3. none = throw if no offset.
+      enable-auto-commit: false # Disable auto commit to manage offsets manually
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 500 # Limit the number of records returned in a single poll to control processing load
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        acks: all # Ensure all replicas acknowledge to guarantee message durability
+        retries: 3 # Retry sending messages up to 10 times on failure
+        batch.size: 16384 # Batch size in bytes for sending messages
+        linger.ms: 1 # Wait up to 1 ms before sending a batch to allow more records to accumulate
+        buffer.memory: 33554432 # Total memory size the producer can use to buffer records waiting to be sent
+    template:
+      default-topic: task-events
+    admin:
+      properties:
+        bootstrap.servers: localhost:9092
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+  endpoint:
+    health:
+      show-details: always
