@@ -12,6 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class TaskEvent {
+    //TODO: Only include fields that are necessary for the event, not the entire Task object
     private final String eventId;
     private EventType eventType;
     private Task task;
@@ -56,6 +57,18 @@ public class TaskEvent {
             case SUBTASK_ADDED -> String.format("Subtask added to task '%s'", task.getTitle());
             default -> String.format("Event occurred on task '%s'", task.getTitle());
         };
+    }
+
+    @Override
+    public String toString() {
+        return "TaskEvent{" +
+                "eventId='" + eventId + '\'' +
+                ", eventType=" + eventType +
+                ", taskId=" + (task != null ? task.getId() : null) +
+                ", performedBy='" + performedBy + '\'' +
+                ", timestamp=" + timestamp +
+                ", description='" + description + '\'' +
+                '}';
     }
 
 }

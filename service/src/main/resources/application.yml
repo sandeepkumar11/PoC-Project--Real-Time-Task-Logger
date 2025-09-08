@@ -13,7 +13,7 @@ spring:
       pool-name: HikariPool-1
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     # Recommended: enable dialect explicitly if you're getting metadata issues
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -46,6 +46,25 @@ spring:
     admin:
       properties:
         bootstrap.servers: localhost:9092
+
+kafka:
+  topics:
+    task-events: task-events
+    audit-events: audit-events
+    notification-events: notification-events
+  topic:
+    task-events:
+      partitions: 3
+      replicas: 1
+      retention-ms: 604800000 # 7 days in milliseconds
+    audit-events:
+      partitions: 2
+      replicas: 1
+      retention-ms: 259200000 # 3 days in milliseconds
+    notification-events:
+      partitions: 2
+      replicas: 1
+      retention-ms: 864000000 # 1 day in milliseconds
 
 server:
   port: 8081

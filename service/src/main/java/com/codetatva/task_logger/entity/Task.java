@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String title;
@@ -36,7 +37,7 @@ public class Task {
     private TaskPriority priority = TaskPriority.MEDIUM;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
     private BigDecimal estimatedHours;
     private BigDecimal actualHours = BigDecimal.ZERO;
 
@@ -55,7 +56,7 @@ public class Task {
     private LocalDateTime completedAt;
 
     @Version
-    private Long version; // For optimistic locking
+    private Integer version; // For optimistic locking
 
     @PrePersist
     protected void onCreate() {

@@ -21,8 +21,8 @@ services:
   pgadmin:
     image: dpage/pgadmin4:9.0
     container_name: pgadmin
-    profiles:
-      - local
+#    profiles:
+#      - local
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@localhost.com
       PGADMIN_DEFAULT_PASSWORD: admin123

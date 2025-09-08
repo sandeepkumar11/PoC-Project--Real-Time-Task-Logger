@@ -1,0 +1,52 @@
+package com.codetatva.task_logger.config;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.support.converter.StringJsonMessageConverter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
+@Configuration
+@EnableKafka
+public class KafkaAdminConfig {
+
+    @Autowired
+    private KafkaTopicsProperties kafkaTopicsProperties;
+
+    @Bean
+    public List<NewTopic> kafkaTopics() {
+        List<NewTopic> topics = new ArrayList<>();
+        Map<String, KafkaTopicsProperties.TopicConfig> topicConfigMap = kafkaTopicsProperties.getTopics();
+        if (topicConfigMap == null || topicConfigMap.isEmpty()) {
+            log.warn("No Kafka topics configured in application properties.");
+            return topics; // Return empty list if no topics are configured
+        }
+        for (Map.Entry<String, KafkaTopicsProperties.TopicConfig> entry : topicConfigMap.entrySet()) {
+            String name = entry.getKey();
+            KafkaTopicsProperties.TopicConfig config = entry.getValue();
+            NewTopic topic = new NewTopic(name, config.getPartitions(), (short) config.getReplicas())
+                    .configs(Map.of("retention.ms", String.valueOf(config.getRetentionMs())));
+            topics.add(topic);
+        }
+        return topics;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
+            ConsumerFactory<String, Object> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
+        factory.setRecordMessageConverter(new StringJsonMessageConverter());
+        return factory;
+    }
+}
