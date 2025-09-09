@@ -29,9 +29,8 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-//        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.codetatva.task_logger.events");
-        props.put("spring.json.trusted.packages", "com.codetatva.task_logger.events");
-        props.put("spring.json.type.mapping", "taskEvent:com.codetatva.task_logger.events.TaskEvent");
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.codetatva.task_logger.events");
+        props.put(JsonDeserializer.TYPE_MAPPINGS, "taskEvent:com.codetatva.task_logger.events.TaskEvent");
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
