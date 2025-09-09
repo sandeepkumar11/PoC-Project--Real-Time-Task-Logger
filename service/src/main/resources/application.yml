@@ -32,6 +32,9 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       max-poll-records: 500 # Limit the number of records returned in a single poll to control processing load
+      properties:
+        spring.json.trusted.packages: 'com.codetatva.task_logger.events'
+        spring.json.type.mapping: 'taskEvent:com.codetatva.task_logger.events.TaskEvent'
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
