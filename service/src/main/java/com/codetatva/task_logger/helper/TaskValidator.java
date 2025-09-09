@@ -32,7 +32,7 @@ public class TaskValidator {
         try {
             return TaskPriority.valueOf(priorityStr.toUpperCase());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Priority must be a valid integer.");
+            throw new IllegalArgumentException("Priority must be a valid enum.");
         }
     }
 

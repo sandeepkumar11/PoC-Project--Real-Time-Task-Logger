@@ -7,6 +7,7 @@ import com.codetatva.task_logger.entity.Task;
 import com.codetatva.task_logger.enums.EventType;
 import com.codetatva.task_logger.events.TaskEvent;
 import com.codetatva.task_logger.exception.ResourceNotFoundException;
+import com.codetatva.task_logger.helper.TaskEventFactory;
 import com.codetatva.task_logger.helper.TaskFactory;
 import com.codetatva.task_logger.mapper.TaskMapper;
 import com.codetatva.task_logger.repository.TaskRepository;
@@ -26,7 +27,6 @@ import java.util.UUID;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
-    private final TaskFactory taskFactory;
     private final TaskMapper mapper;
 
     @Autowired
@@ -35,15 +35,14 @@ public class TaskServiceImpl implements TaskService {
     @Value("${kafka.topic.task-events:task-events}")
     private String taskEventsTopic;
 
-    public TaskServiceImpl(TaskRepository taskRepository, TaskFactory taskFactory, TaskMapper mapper) {
+    public TaskServiceImpl(TaskRepository taskRepository, TaskMapper mapper) {
         this.taskRepository = taskRepository;
-        this.taskFactory = taskFactory;
         this.mapper = mapper;
     }
 
     @Override
     public TaskResponse create(TaskCreateRequest request) {
-        Task task = taskFactory.createTask(request);
+        Task task = TaskFactory.createTask(request);
 
         if(request.getParentTaskId() != null && !request.getParentTaskId().isEmpty()) {
             Task parentTask = taskRepository.findById(UUID.fromString(request.getParentTaskId()))
@@ -96,7 +95,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void publishTaskEvent(Task task, EventType eventType, String performedBy) {
-        TaskEvent taskEvent = new TaskEvent(task, eventType, performedBy);
+        TaskEvent taskEvent = TaskEventFactory.createTaskEvent(task, eventType, performedBy,null);
         kafkaTemplate.send(taskEventsTopic, task.getId().toString(), taskEvent);
         log.info("Published task event: {} for task ID: {}", eventType, task.getId());
     }
