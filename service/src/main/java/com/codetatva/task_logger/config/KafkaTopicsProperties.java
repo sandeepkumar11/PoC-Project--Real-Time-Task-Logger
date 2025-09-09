@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Setter
 @Getter
+@Setter
 @Component
-@ConfigurationProperties(prefix = "kafka.topic")
+@ConfigurationProperties(prefix = "kafka")
 public class KafkaTopicsProperties {
 
     private Map<String, TopicConfig> topics;

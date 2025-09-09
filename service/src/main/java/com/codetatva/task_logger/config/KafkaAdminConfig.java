@@ -24,7 +24,7 @@ public class KafkaAdminConfig {
         List<NewTopic> topics = new ArrayList<>();
         Map<String, KafkaTopicsProperties.TopicConfig> topicConfigMap = kafkaTopicsProperties.getTopics();
         if (topicConfigMap == null || topicConfigMap.isEmpty()) {
-            log.warn("No Kafka topics configured in application properties.");
+            log.error("No Kafka topics configured in application properties.");
             return topics; // Return empty list if no topics are configured
         }
         for (Map.Entry<String, KafkaTopicsProperties.TopicConfig> entry : topicConfigMap.entrySet()) {
@@ -34,6 +34,7 @@ public class KafkaAdminConfig {
                     .configs(Map.of("retention.ms", String.valueOf(config.getRetentionMs())));
             topics.add(topic);
         }
+        log.info("Configured Kafka topics: {}", topics);
         return topics;
     }
 
