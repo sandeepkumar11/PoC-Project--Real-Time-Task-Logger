@@ -52,10 +52,6 @@ spring:
 
 kafka:
   topics:
-    task-events: task-events
-    audit-events: audit-events
-    notification-events: notification-events
-  topic:
     task-events:
       partitions: 3
       replicas: 1
