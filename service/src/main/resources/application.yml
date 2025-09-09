@@ -30,11 +30,11 @@ spring:
       auto-offset-reset: earliest # 1. earliest = start from the earliest available offset when no committed offset exists (good for new groups). 2. latest = start from end (only new records). 3. none = throw if no offset.
       enable-auto-commit: false # Disable auto commit to manage offsets manually
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       max-poll-records: 500 # Limit the number of records returned in a single poll to control processing load
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         acks: all # Ensure all replicas acknowledge to guarantee message durability
         retries: 3 # Retry sending messages up to 10 times on failure

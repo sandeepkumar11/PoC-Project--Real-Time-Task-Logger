@@ -25,7 +25,7 @@ public class TaskEventConsumer {
     public void consumeTaskEvent(TaskEvent event){
         // Send real-time update to subscribed clients
         log.info("Received Task Event: {}", event);
-        String destination = "/topic/task-updates/" + event.getTask().getAssignedTo();
+        String destination = "/topic/task-updates/" + event.getAssignedTo();
 //        messagingTemplate.convertAndSend(destination, event);
     }
 }

@@ -7,13 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskFactory {
 
-    private final TaskValidator validator;
+    private static final TaskValidator validator = new TaskValidator();
 
-    public TaskFactory(TaskValidator validator) {
-        this.validator = validator;
-    }
-
-    public Task createTask(TaskCreateRequest request){
+    public static Task createTask(TaskCreateRequest request){
         Task task = new Task();
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());

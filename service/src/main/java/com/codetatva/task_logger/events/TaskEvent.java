@@ -1,74 +1,53 @@
 package com.codetatva.task_logger.events;
 
-import com.codetatva.task_logger.entity.Task;
 import com.codetatva.task_logger.enums.EventType;
+import com.codetatva.task_logger.enums.TaskPriority;
+import com.codetatva.task_logger.enums.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
+@Builder
 @Getter
-@Setter
+@ToString
+@Jacksonized // For deserialization with @Builder
 public class TaskEvent {
-    //TODO: Only include fields that are necessary for the event, not the entire Task object
+
     private final String eventId;
-    private EventType eventType;
-    private Task task;
-    private String performedBy;
+
+    @JsonProperty("event_type")
+    private final EventType eventType;
+    private final String performedBy;
+
+    /**
+     * Description of the event.
+     */
+    private final String description;
+
+    // Task details snapshot
+    private final String taskId;
+    private final String title;
+    private final String taskDescription;
+    private final String assignedTo;
+    private final TaskPriority priority;
+    private final TaskStatus status;
+    private final BigDecimal actualHours;
+    private final BigDecimal estimatedHours;
+    private final LocalDate dueDate;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final String createdBy;
+    private final String parentTaskId;
+    private final Integer version;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timestamp;
-
-    private String description;
-
-    public TaskEvent() {
-        this.eventId = UUID.randomUUID().toString();
-        this.timestamp = LocalDateTime.now();
-    }
-
-    public TaskEvent(Task task, EventType eventType, String performedBy) {
-        this();
-        this.task = task;
-        this.eventType = eventType;
-        this.performedBy = performedBy;
-        this.description = generateDescription();
-    }
-
-    public TaskEvent(Task task, EventType eventType, String performedBy, String customDescription) {
-        this();
-        this.task = task;
-        this.eventType = eventType;
-        this.performedBy = performedBy;
-        this.description = customDescription;
-    }
-
-    private String generateDescription() {
-        return switch (eventType) {
-            case CREATED -> String.format("Task '%s' was created", task.getTitle());
-            case UPDATED -> String.format("Task '%s' was updated", task.getTitle());
-            case DELETED -> String.format("Task '%s' was deleted", task.getTitle());
-            case STATUS_CHANGED -> String.format("Task '%s' status changed to %s", task.getTitle(), task.getStatus());
-            case ASSIGNEE_CHANGED ->
-                    String.format("Task '%s' was assigned to user %s", task.getTitle(), task.getAssignedTo());
-            case COMPLETED -> String.format("Task '%s' was completed", task.getTitle());
-            case COMMENT_ADDED -> String.format("Comment added to task '%s'", task.getTitle());
-            case SUBTASK_ADDED -> String.format("Subtask added to task '%s'", task.getTitle());
-            default -> String.format("Event occurred on task '%s'", task.getTitle());
-        };
-    }
-
-    @Override
-    public String toString() {
-        return "TaskEvent{" +
-                "eventId='" + eventId + '\'' +
-                ", eventType=" + eventType +
-                ", taskId=" + (task != null ? task.getId() : null) +
-                ", performedBy='" + performedBy + '\'' +
-                ", timestamp=" + timestamp +
-                ", description='" + description + '\'' +
-                '}';
-    }
+    private final LocalDateTime timestamp;
 
 }
