@@ -23,10 +23,12 @@ public class KafkaAdminConfig {
     public List<NewTopic> kafkaTopics() {
         List<NewTopic> topics = new ArrayList<>();
         Map<String, KafkaTopicsProperties.TopicConfig> topicConfigMap = kafkaTopicsProperties.getTopics();
+
         if (topicConfigMap == null || topicConfigMap.isEmpty()) {
             log.error("No Kafka topics configured in application properties.");
             return topics; // Return empty list if no topics are configured
         }
+
         for (Map.Entry<String, KafkaTopicsProperties.TopicConfig> entry : topicConfigMap.entrySet()) {
             String name = entry.getKey();
             KafkaTopicsProperties.TopicConfig config = entry.getValue();
